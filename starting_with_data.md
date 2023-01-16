@@ -12,6 +12,8 @@ FROM all_sessions al
 JOIN analytics an
 ON al.full_visitor_id = an.full_visitor_id
 WHERE an.page_views IS NOT NULL
+AND v2_product_category <> '${escCatTitle}'
+AND v2_product_category <> '(not set)'
 GROUP BY 1,2,3,4,5,6
 ORDER BY 6 DESC
 ```

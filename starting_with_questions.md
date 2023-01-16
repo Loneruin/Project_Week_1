@@ -151,9 +151,10 @@ WITH sale_table AS (
 				   )
 SELECT DISTINCT country
 				,city
+				,EXTRACT(YEAR FROM al.date) AS year
 				,al.v2_product_name
 				,al.v2_product_category
-				,ROUND(SUM(total_ordered * product_price),2) AS revenue
+				,SUM(total_ordered * product_price) AS revenue
 FROM sale_table st
 JOIN all_sessions al
 ON st.product_sku = al.product_sku
@@ -161,8 +162,8 @@ WHERE city <> 'not available in demo dataset'
 AND city <> '(not set)'
 AND v2_product_category <> '(not set)' 
 AND v2_product_category <> '${escCatTitle}'
-GROUP BY 1,2,3,4
-ORDER BY 5 DESC
+GROUP BY 1,2,3,4,5
+ORDER BY 3,6 DESC
 ```
 
 Answer:
