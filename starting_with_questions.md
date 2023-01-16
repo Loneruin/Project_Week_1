@@ -109,11 +109,31 @@ There is a high demand for `home and office products in most the cities in Unite
 
 
 SQL Queries:
-
-
+```SQL
+WITH sale_table AS (
+					SELECT sap.total_ordered
+						   ,sap.product_sku
+					FROM sales_report sap
+					JOIN sales_by_sku sas
+					ON sap.product_sku = sas.product_sku
+				   )
+SELECT DISTINCT country
+				,city
+				,al.v2_product_name
+				,al.v2_product_category
+				,total_ordered
+FROM sale_table st
+JOIN all_sessions al
+ON st.product_sku = al.product_sku
+WHERE city <> 'not available in demo dataset'
+AND city <> '(not set)'
+AND v2_product_category <> '(not set)'
+GROUP BY 1,2,3,4,5
+ORDER BY 5 DESC
+```
 
 Answer:
-
+Top-selling product from each city/country is Ballpoint LED pen. As we can see from the result, most of the top-selling products come from `home/office` category such as `Ballpoint LED pen`, `"Google 17oz Stainless Steel Sport Bottle` and `Leatherette Journal` which have more resonable price so visitor can easily order those products without hesistation
 
 
 
@@ -121,11 +141,43 @@ Answer:
 **Question 5: Can we summarize the impact of revenue generated from each city/country?**
 
 SQL Queries:
-
-
+```SQL
+WITH sale_table AS (
+					SELECT sap.total_ordered
+						   ,sap.product_sku
+					FROM sales_report sap
+					JOIN sales_by_sku sas
+					ON sap.product_sku = sas.product_sku
+				   )
+SELECT DISTINCT country
+				,city
+				,al.v2_product_name
+				,al.v2_product_category
+				,ROUND(SUM(total_ordered * product_price),2) AS revenue
+FROM sale_table st
+JOIN all_sessions al
+ON st.product_sku = al.product_sku
+WHERE city <> 'not available in demo dataset'
+AND city <> '(not set)'
+AND v2_product_category <> '(not set)' 
+AND v2_product_category <> '${escCatTitle}'
+GROUP BY 1,2,3,4
+ORDER BY 5 DESC
+```
 
 Answer:
-
+We can see from the data output that most of the revenue generated from most of the city in United State comes from Google products such as NEST thermostat and NEST security camera:
+"country"	"city"	"v2_product_name"	"v2_product_category"	"revenue"
+"United States"	"Mountain View"	"Nest® Cam Indoor Security Camera - USA"	"Home/Nest/Nest-USA/"	401574.00
+"United States"	"Mountain View"	"Nest® Cam Outdoor Security Camera - USA"	"Home/Nest/Nest-USA/"	271824.00
+"United States"	"Mountain View"	"Nest® Learning Thermostat 3rd Gen-USA - Stainless Steel"	"Home/Nest/Nest-USA/"	229266.00
+"United States"	"Palo Alto"	"Nest® Cam Outdoor Security Camera - USA"	"Home/Nest/Nest-USA/"	138096.00
+"United States"	"San Francisco"	"Nest® Learning Thermostat 3rd Gen-USA - Stainless Steel"	"Home/Nest/Nest-USA/"	121636.00
+"United States"	"Sunnyvale"	"Nest® Cam Outdoor Security Camera - USA"	"Home/Nest/Nest-USA/"	115808.00
+"United States"	"New York"	"Nest® Cam Outdoor Security Camera - USA"	"Home/Nest/Nest-USA/"	102480.00
+"United States"	"Sunnyvale"	"Nest® Learning Thermostat 3rd Gen-USA - Stainless Steel"	"Home/Nest/Nest-USA/"	84224.00
+"United States"	"Palo Alto"	"Nest® Learning Thermostat 3rd Gen-USA - Stainless Steel"	"Home/Nest/Nest-USA/"	74824.00
+"United States"	"Palo Alto"	"Nest® Cam Indoor Security Camera - USA"	"Home/Nest/Nest-USA/"	73032.00
 
 
 
