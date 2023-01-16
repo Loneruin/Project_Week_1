@@ -149,21 +149,29 @@ WITH sale_table AS (
 					JOIN sales_by_sku sas
 					ON sap.product_sku = sas.product_sku
 				   )
-SELECT DISTINCT country
-				,city
-				,EXTRACT(YEAR FROM al.date) AS year
-				,al.v2_product_name
-				,al.v2_product_category
-				,SUM(total_ordered * product_price) AS revenue
-FROM sale_table st
-JOIN all_sessions al
-ON st.product_sku = al.product_sku
-WHERE city <> 'not available in demo dataset'
-AND city <> '(not set)'
-AND v2_product_category <> '(not set)' 
-AND v2_product_category <> '${escCatTitle}'
-GROUP BY 1,2,3,4,5
-ORDER BY 3,6 DESC
+	,sale_table_new AS (
+						 SELECT DISTINCT country
+										,city
+										,EXTRACT(YEAR FROM al.date) AS year
+										,al.v2_product_name
+										,al.v2_product_category
+										,SUM(total_ordered * product_price) AS revenue
+						FROM sale_table st
+						JOIN all_sessions al
+						ON st.product_sku = al.product_sku
+						WHERE city <> 'not available in demo dataset'
+						AND city <> '(not set)'
+						AND v2_product_category <> '(not set)' 
+						AND v2_product_category <> '${escCatTitle}'
+						GROUP BY 1,2,3,4,5
+						ORDER BY 6 DESC
+						)
+SELECT *
+		,ROUND(((revenue/(
+						  SELECT SUM(revenue)
+				  		  FROM sale_table_new)
+				)*100),2) AS percentage_revenue
+FROM sale_table_new
 ```
 
 Answer:
