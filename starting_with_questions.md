@@ -22,8 +22,6 @@ Answer:
 2. Top highest cities: Atlanta, Sunnyvale, Tel Aviv-Yafo, Los Angeles, Sydney, Seattle, Chicago, Palo Alto, San Francisco Nashville
 
 
-
-
 **Question 2: What is the average number of products ordered from visitors in each city and country?**
 
 
@@ -150,7 +148,7 @@ WITH sale_table AS (
 					ON sap.product_sku = sas.product_sku
 				   )
 	,sale_table_new AS (
-						 SELECT DISTINCT country
+						SELECT DISTINCT country
 										,city
 										,EXTRACT(YEAR FROM al.date) AS year
 										,al.v2_product_name
@@ -172,6 +170,8 @@ SELECT *
 				  		  FROM sale_table_new)
 				)*100),2) AS percentage_revenue
 FROM sale_table_new
+GROUP BY 1,2,3,4,5,6
+ORDER BY percentage_revenue DESC
 ```
 
 Answer:
@@ -187,7 +187,6 @@ We can see from the data output that most of the revenue generated from most of 
 "United States"	"Sunnyvale"	"Nest® Learning Thermostat 3rd Gen-USA - Stainless Steel"	"Home/Nest/Nest-USA/"	84224.00
 "United States"	"Palo Alto"	"Nest® Learning Thermostat 3rd Gen-USA - Stainless Steel"	"Home/Nest/Nest-USA/"	74824.00
 "United States"	"Palo Alto"	"Nest® Cam Indoor Security Camera - USA"	"Home/Nest/Nest-USA/"	73032.00
-
 
 
 
